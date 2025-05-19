@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Expenses</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar (reuse) -->
+    <aside class="sidebar">
+      <h2 class="logo">AcctEdge</h2>
+      <nav>
+        <a href="index.html"><i class="fas fa-home"></i> Dashboard</a>
+        <a href="invoices.html"><i class="fas fa-file-invoice-dollar"></i> Invoices</a>
+        <a href="expenses.html" class="active"><i class="fas fa-wallet"></i> Expenses</a>
+        <a href="reports.html"><i class="fas fa-chart-line"></i> Reports</a>
+        <a href="#"><i class="fas fa-cog"></i> Settings</a>
+      </nav>
+    </aside>
+
+    <!-- Content -->
+    <main class="dashboard">
+      <header class="dashboard-header">
+        <h1>Expense Manager</h1>
+      </header>
+
+      <section class="expense-entry">
+        <input type="text" id="expenseAmount" placeholder="Amount" />
+        <select id="expenseCategory">
+          <option value="Logistics">Logistics</option>
+          <option value="Marketing">Marketing</option>
+          <option value="Salary">Salary</option>
+          <option value="Supplies">Supplies</option>
+        </select>
+        <button id="addExpenseBtn">Add Expense</button>
+      </section>
+
+      <section class="expense-chart">
+        <canvas id="expensePieChart" height="250" width="400"></canvas>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="js/expenses.js"></script>
+</body>
+</html>

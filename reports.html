@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Reports</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <h2 class="logo">AcctEdge</h2>
+      <nav>
+        <a href="index.html"><i class="fas fa-home"></i> Dashboard</a>
+        <a href="invoices.html"><i class="fas fa-file-invoice-dollar"></i> Invoices</a>
+        <a href="expenses.html"><i class="fas fa-wallet"></i> Expenses</a>
+        <a href="reports.html" class="active"><i class="fas fa-chart-line"></i> Reports</a>
+        <a href="#"><i class="fas fa-cog"></i> Settings</a>
+      </nav>
+    </aside>
+
+    <!-- Main -->
+    <main class="dashboard">
+      <header class="dashboard-header">
+        <h1>Financial Reports</h1>
+        <div class="date-filters">
+          <input type="date" id="startDate" />
+          <input type="date" id="endDate" />
+          <button id="applyFilter">Apply</button>
+        </div>
+      </header>
+
+      <section class="charts">
+        <div class="chart-wrapper">
+          <canvas id="lineChart" height="100"></canvas>
+          <button id="downloadLine" class="export-btn">Download PNG</button>
+        </div>
+
+        <div class="chart-wrapper">
+          <canvas id="barChart" height="100"></canvas>
+          <button id="downloadBar" class="export-btn">Download PNG</button>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="js/reports.js"></script>
+  </div>
+</body>
+</html>
+

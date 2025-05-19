@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Create Invoice</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    <aside class="sidebar">
+      <h2 class="logo">AcctEdge</h2>
+      <nav>
+        <a href="index.html">Dashboard</a>
+        <a href="invoices.html">Invoices</a>
+        <a href="expenses.html">Expenses</a>
+        <a href="reports.html">Reports</a>
+        <a href="#" class="active">Create Invoice</a>
+      </nav>
+    </aside>
+
+    <main class="dashboard">
+      <header class="dashboard-header">
+        <h1>New Invoice</h1>
+      </header>
+
+      <section class="invoice-form">
+        <input type="text" id="clientName" placeholder="Client Name" />
+        <input type="text" id="clientEmail" placeholder="Client Email" />
+        <input type="text" id="service" placeholder="Service Description" />
+        <input type="number" id="amount" placeholder="Amount (₦)" />
+        <input type="date" id="dueDate" />
+        <textarea id="notes" placeholder="Additional Notes"></textarea>
+        <button id="generateInvoice">Generate & Send Invoice</button>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="js/createInvoice.js"></script>
+</body>
+</html>

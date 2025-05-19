@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Accounting Dashboard</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <h2 class="logo">AcctEdge</h2>
+      <nav>
+        <a href="#" class="active">Dashboard</a>
+        <a href="invoices.html">Invoices</a>
+        <a href="expenses.html">Expenses</a>
+        <a href="reports.html">Reports</a>
+        <a href="#">Settings</a>
+      </nav>
+    </aside>
+
+    <!-- Main Dashboard -->
+    <main class="dashboard">
+      <header class="dashboard-header">
+        <h1>Welcome Back, Humble</h1>
+        <div class="profile-section">
+          <span class="theme-toggle">🌓</span>
+          <img src="assets/images/profile.jpg" alt="profile" class="profile-pic"/>
+        </div>
+      </header>
+
+      <section class="cards">
+  <div class="card fade-in">
+    <h3>Total Income</h3>
+    <p id="totalIncome">₦0</p>
+  </div>
+  <div class="card fade-in delay-1">
+    <h3>Total Expenses</h3>
+    <p id="totalExpenses">₦0</p>
+  </div>
+  <div class="card fade-in delay-2">
+    <h3>Pending Invoices</h3>
+    <p id="pendingInvoices">₦0</p>
+  </div>
+</section>
+
+
+      <button class="add-btn float-in">＋</button>
+    </main>
+  </div>
+
+  <!-- Modal Placeholder -->
+  <div class="modal hidden">
+  <div class="modal-content">
+    <h2>Add Transaction</h2>
+    <input type="text" id="amountInput" placeholder="Amount" />
+    <select id="categoryInput">
+      <option value="income">Income</option>
+      <option value="salary">Salary</option>
+      <option value="supplies">Supplies</option>
+      <option value="logistics">Logistics</option>
+    </select>
+    <button class="submit">Save</button>
+  </div>
+</div>
+
+  <script type="module" src="js/app.js"></script>
+  <script type="module" src="js/dashboard.js"></script>
+  <script src="js/storage.js"></script>
+  
+</body>
+</html>
