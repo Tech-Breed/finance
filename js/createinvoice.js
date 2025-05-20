@@ -1,5 +1,8 @@
 import { saveInvoice } from "./storage.js";
-console.log("create-invoice.js loaded");
+console.log("createinvoice.js loaded");
+import { saveInvoice } from "./storage.js";
+console.log("Invoice script loaded!");
+
 
 
 const btn = document.getElementById("generateInvoice");
