@@ -9,7 +9,7 @@
 </head>
 <body>
   <div class="app-container">
-    <!-- Sidebar (reuse) -->
+    <!-- Sidebar -->
     <aside class="sidebar">
       <h2 class="logo">AcctEdge</h2>
       <nav>
@@ -29,17 +29,40 @@
 
       <section class="expense-entry">
         <input type="text" id="expenseAmount" placeholder="Amount" />
+
         <select id="expenseCategory">
-          <option value="Logistics">Logistics</option>
-          <option value="Marketing">Marketing</option>
-          <option value="Salary">Salary</option>
-          <option value="Supplies">Supplies</option>
+          <optgroup label="Assets">
+            <option value="Cash">Cash</option>
+            <option value="Inventory">Inventory</option>
+            <option value="Equipment">Equipment</option>
+            <option value="Bank">Bank</option>
+          </optgroup>
+
+          <optgroup label="Liabilities">
+            <option value="Loan">Loan</option>
+            <option value="Debt">Debt</option>
+            <option value="Payable">Payable</option>
+          </optgroup>
+
+          <optgroup label="Income">
+            <option value="Income">Income</option>
+            <option value="Sales">Sales</option>
+            <option value="Deposit">Deposit</option>
+          </optgroup>
+
+          <optgroup label="Expenses">
+            <option value="Logistics">Logistics</option>
+            <option value="Marketing">Marketing</option>
+            <option value="Salary">Salary</option>
+            <option value="Supplies">Supplies</option>
+          </optgroup>
         </select>
-        <button id="addExpenseBtn">Add Expense</button>
+
+        <button id="addExpenseBtn">Add Entry</button>
       </section>
 
       <section class="expense-chart">
-        <canvas id="expensePieChart" height="250" width="400"></canvas>
+        <canvas id="expensePieChart" height="250"></canvas>
       </section>
     </main>
   </div>

@@ -4,60 +4,67 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Invoice List</title>
-   <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
   <div class="app-container">
-    <!-- Reuse Sidebar from index.html -->
+    <!-- Sidebar -->
     <aside class="sidebar">
       <h2 class="logo">AcctEdge</h2>
       <nav>
         <a href="index.html"><i class="fas fa-home"></i> Dashboard</a>
         <a href="invoices.html" class="active"><i class="fas fa-file-invoice-dollar"></i> Invoices</a>
+        <a href="create-invoice.html"><i class="fas fa-plus-circle"></i> Create Invoice</a>
         <a href="expenses.html"><i class="fas fa-wallet"></i> Expenses</a>
         <a href="reports.html"><i class="fas fa-chart-line"></i> Reports</a>
-        <a href="#"><i class="fas fa-cog"></i> Settings</a>
       </nav>
     </aside>
 
-    <!-- Invoice Table -->
+    <!-- Main -->
     <main class="dashboard">
       <header class="dashboard-header">
-        <h1>All Transactions</h1>
+        <h1>All Invoices</h1>
+        <select id="statusFilter">
+          <option value="all">All</option>
+          <option value="sent">Sent</option>
+          <option value="paid">Paid</option>
+          <option value="overdue">Overdue</option>
+        </select>
       </header>
 
       <section class="invoice-table">
-        <section class="filters">
-  <input type="text" id="searchInput" placeholder="Search by category..." />
-  <select id="categoryFilter">
-    <option value="all">All Categories</option>
-    <option value="services">Services</option>
-    <option value="supplies">Supplies</option>
-    <option value="salary">Salary</option>
-    <option value="logistics">Logistics</option>
-  </select>
-
-  <!-- Add here -->
-  <button id="exportCSV" class="export-btn">Export CSV</button>
-</section>
-
-
         <table>
           <thead>
             <tr>
               <th>#</th>
+              <th>Client</th>
               <th>Amount</th>
-              <th>Category</th>
-              <th>Date</th>
+              <th>Status</th>
+              <th>Due</th>
+              <th>Actions</th>
             </tr>
           </thead>
-          <tbody id="invoice-body">
-            <!-- Dynamic content will be injected here -->
+          <tbody id="invoiceTableBody">
+            <!-- Dynamic invoice rows will be injected here -->
           </tbody>
         </table>
       </section>
     </main>
+  </div>
+
+  <!-- Status Update Modal -->
+  <div class="modal hidden" id="statusModal">
+    <div class="modal-content">
+      <h3>Update Invoice Status</h3>
+      <select id="modalStatus">
+        <option value="sent">Sent</option>
+        <option value="paid">Paid</option>
+        <option value="overdue">Overdue</option>
+      </select>
+      <button id="saveStatus">Save</button>
+    </div>
   </div>
 
   <script type="module" src="js/invoices.js"></script>

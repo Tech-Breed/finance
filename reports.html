@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <title>Reports</title>
   <link rel="stylesheet" href="css/style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -32,10 +34,13 @@
         </div>
       </header>
 
+      <!-- Charts -->
       <section class="charts">
         <div class="chart-wrapper">
           <canvas id="lineChart" height="100"></canvas>
-          <button id="downloadLine" class="export-btn">Download PNG</button>
+         <button id="exportBalance" class="export-btn">Download Balance Sheet (PNG)</button>
+
+          
         </div>
 
         <div class="chart-wrapper">
@@ -43,10 +48,101 @@
           <button id="downloadBar" class="export-btn">Download PNG</button>
         </div>
       </section>
-    </main>
 
-    <script type="module" src="js/reports.js"></script>
+      <!-- Profit & Loss Section -->
+      <section class="report-section">
+        <h2>Profit & Loss Statement</h2>
+        <div class="pl-summary">
+          <div class="pl-card">
+            <h4>Total Income</h4>
+            <p id="plIncome">₦0</p>
+          </div>
+          <div class="pl-card">
+            <h4>Total Expenses</h4>
+            <p id="plExpense">₦0</p>
+          </div>
+          <div class="pl-card">
+            <h4>Net Profit</h4>
+            <p id="plNet">₦0</p>
+          </div>
+        </div>
+
+        <div class="pl-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>Category</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody id="plTableBody">
+              <!-- Filled by JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="chart-wrapper">
+          <canvas id="plChart" height="300"></canvas>
+        </div>
+      </section>
+<section class="report-section">
+  <h2>Balance Sheet</h2>
+
+  <div class="balance-grid">
+   
+    <div class="balance-column">
+      <h3>Assets</h3>
+      <ul id="assetsList"></ul>
+      <p class="total">Total Assets: <span id="totalAssets">₦0</span></p>
+    </div>
+
+    <div class="balance-column">
+      <h3>Liabilities</h3>
+      <ul id="liabilitiesList"></ul>
+      <p class="total">Total Liabilities: <span id="totalLiabilities">₦0</span></p>
+    </div>
+
+    <div class="balance-column">
+      <h3>Equity</h3>
+      <ul>
+        <li>Retained Earnings</li>
+        <li>Investments</li>
+      </ul>
+      <p class="total">Equity: <span id="equityValue">₦0</span></p>
+    </div>
   </div>
+</section>
+
+<section class="report-section">
+  <h2>Cash Flow Statement</h2>
+  <div class="cashflow-grid">
+    <div>
+      <h4>Cash Inflows</h4>
+      <ul id="cashInList"></ul>
+      <p class="total">Total Inflow: <span id="cashInTotal">₦0</span></p>
+    </div>
+
+    <div>
+      <h4>Cash Outflows</h4>
+      <ul id="cashOutList"></ul>
+      <p class="total">Total Outflow: <span id="cashOutTotal">₦0</span></p>
+    </div>
+
+    <div>
+      <h4>Net Cash Flow</h4>
+      <p class="total"><span id="netCashFlow">₦0</span></p>
+    </div>
+  </div>
+</section>
+
+
+    </main>
+  </div>
+
+  <script type="module" src="js/reports.js"></script>
+  <script src="js/html2canvas.min.js"></script>
+
 </body>
 </html>
 

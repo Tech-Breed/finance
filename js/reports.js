@@ -1,40 +1,28 @@
+
 import { getAllTransactions } from "./storage.js";
 
-const lineCtx = document.getElementById("lineChart");
-const barCtx = document.getElementById("barChart");
+let filteredData = getAllTransactions();
 
-const startDateEl = document.getElementById("startDate");
-const endDateEl = document.getElementById("endDate");
-const applyBtn = document.getElementById("applyFilter");
-
-const downloadLine = document.getElementById("downloadLine");
-const downloadBar = document.getElementById("downloadBar");
-
-let lineChartInstance = null;
-let barChartInstance = null;
-
-function drawReports(filtered = null) {
-  const all = filtered || getAllTransactions();
+// 🚀 RENDER CHARTS
+function renderCharts(data) {
+  const lineCtx = document.getElementById("lineChart");
+  const barCtx = document.getElementById("barChart");
 
   const byDate = {};
   const byCategory = {};
 
-  all.forEach(tx => {
-    const txDate = new Date(tx.created);
-    const date = txDate.toLocaleDateString();
-    const category = tx.category;
+  data.forEach(tx => {
+    const date = new Date(tx.created).toLocaleDateString();
+    const category = tx.category.toLowerCase();
     const amount = parseFloat(tx.amount);
 
-    // Group by date
     if (!byDate[date]) byDate[date] = { income: 0, expense: 0 };
-    if (category.toLowerCase().includes("income")) {
+
+    if (["income", "sales", "deposit"].some(k => category.includes(k))) {
       byDate[date].income += amount;
     } else {
       byDate[date].expense += amount;
-
-      // Group by category
-      if (!byCategory[category]) byCategory[category] = 0;
-      byCategory[category] += amount;
+      byCategory[category] = (byCategory[category] || 0) + amount;
     }
   });
 
@@ -42,132 +30,205 @@ function drawReports(filtered = null) {
   const incomeData = dates.map(d => byDate[d].income);
   const expenseData = dates.map(d => byDate[d].expense);
 
-  const categoryLabels = Object.keys(byCategory);
-  const categoryValues = Object.values(byCategory);
-  const totalExpense = categoryValues.reduce((a, b) => a + b, 0);
-
-  // Destroy previous charts
-  if (lineChartInstance) lineChartInstance.destroy();
-  if (barChartInstance) barChartInstance.destroy();
-
-  // Line Chart
-  lineChartInstance = new Chart(lineCtx, {
+  new Chart(lineCtx, {
     type: "line",
     data: {
       labels: dates,
       datasets: [
-        {
-          label: "Income",
-          data: incomeData,
-          borderColor: "#2ecc71",
-          backgroundColor: "rgba(46, 204, 113, 0.2)",
-          fill: true,
-          tension: 0.3
-        },
-        {
-          label: "Expenses",
-          data: expenseData,
-          borderColor: "#e74c3c",
-          backgroundColor: "rgba(231, 76, 60, 0.2)",
-          fill: true,
-          tension: 0.3
-        }
+        { label: "Income", data: incomeData, borderColor: "#2ecc71", fill: false },
+        { label: "Expenses", data: expenseData, borderColor: "#e74c3c", fill: false }
       ]
-    },
-    options: {
-      responsive: true,
-      animation: { duration: 1200, easing: "easeOutQuart" },
-      plugins: {
-        title: {
-          display: true,
-          text: "Income vs Expenses Over Time",
-          font: { size: 16 }
-        },
-        legend: {
-          labels: {
-            color: "#333",
-            font: { size: 14, weight: "bold" }
-          }
-        }
-      }
     }
   });
 
-  // Bar Chart
-  barChartInstance = new Chart(barCtx, {
+  new Chart(barCtx, {
     type: "bar",
     data: {
-      labels: categoryLabels,
+      labels: Object.keys(byCategory),
       datasets: [{
         label: "Expenses by Category",
-        data: categoryValues,
-        backgroundColor: [
-          "#3498db", "#9b59b6", "#f39c12", "#1abc9c", "#e74c3c", "#2ecc71"
-        ],
-        borderRadius: 8,
-        borderSkipped: false
+        data: Object.values(byCategory),
+        backgroundColor: "#3498db"
       }]
-    },
-    options: {
-      responsive: true,
-      animation: { duration: 1200, easing: "easeOutBounce" },
-      plugins: {
-        title: {
-          display: true,
-          text: "Top Expense Categories",
-          font: { size: 16 }
-        },
-        tooltip: {
-          callbacks: {
-            label: function(context) {
-              const val = context.raw;
-              const percent = ((val / totalExpense) * 100).toFixed(1);
-              return `${context.label}: ₦${val.toLocaleString()} (${percent}%)`;
-            }
-          }
-        },
-        legend: { display: false }
-      },
-      scales: {
-        y: { beginAtZero: true }
-      }
     }
   });
 }
 
-// Event: Apply Date Filter
-applyBtn.addEventListener("click", () => {
-  const startDate = new Date(startDateEl.value);
-  const endDate = new Date(endDateEl.value);
+// 📊 PROFIT & LOSS
+function renderPLReport(data) {
+  const tableBody = document.getElementById("plTableBody");
+  let income = 0, expense = 0;
+  const incomeMap = {};
+  const expenseMap = {};
 
-  if (isNaN(startDate) || isNaN(endDate)) {
-    alert("Please select both a start and end date.");
+  data.forEach(tx => {
+    const category = tx.category.toLowerCase();
+    const amount = parseFloat(tx.amount);
+
+    if (["income", "sales", "deposit"].some(k => category.includes(k))) {
+      income += amount;
+      incomeMap[category] = (incomeMap[category] || 0) + amount;
+    } else {
+      expense += amount;
+      expenseMap[category] = (expenseMap[category] || 0) + amount;
+    }
+  });
+
+  // Render table
+  tableBody.innerHTML = "";
+  Object.entries(incomeMap).forEach(([cat, amt]) => {
+    tableBody.innerHTML += `<tr><td>Income</td><td>${cat}</td><td>₦${amt.toLocaleString()}</td></tr>`;
+  });
+  Object.entries(expenseMap).forEach(([cat, amt]) => {
+    tableBody.innerHTML += `<tr><td>Expense</td><td>${cat}</td><td>₦${amt.toLocaleString()}</td></tr>`;
+  });
+
+  document.getElementById("plIncome").textContent = `₦${income.toLocaleString()}`;
+  document.getElementById("plExpense").textContent = `₦${expense.toLocaleString()}`;
+  document.getElementById("plNet").textContent = `₦${(income - expense).toLocaleString()}`;
+
+  // P&L line chart
+  const plCtx = document.getElementById("plChart");
+  const dates = [...new Set(data.map(tx => new Date(tx.created).toLocaleDateString()))];
+
+  const byDate = {};
+  data.forEach(tx => {
+    const date = new Date(tx.created).toLocaleDateString();
+    const category = tx.category.toLowerCase();
+    const amount = parseFloat(tx.amount);
+    if (!byDate[date]) byDate[date] = { income: 0, expense: 0 };
+    if (["income", "sales", "deposit"].some(k => category.includes(k))) {
+      byDate[date].income += amount;
+    } else {
+      byDate[date].expense += amount;
+    }
+  });
+
+  const incomeSeries = dates.map(d => byDate[d]?.income || 0);
+  const expenseSeries = dates.map(d => byDate[d]?.expense || 0);
+
+  new Chart(plCtx, {
+    type: "line",
+    data: {
+      labels: dates,
+      datasets: [
+        { label: "Income", data: incomeSeries, borderColor: "#27ae60", fill: false },
+        { label: "Expenses", data: expenseSeries, borderColor: "#c0392b", fill: false }
+      ]
+    }
+  });
+}
+
+// 📉 CASH FLOW STATEMENT
+function renderCashFlow(data) {
+  const inflowList = document.getElementById("cashInList");
+  const outflowList = document.getElementById("cashOutList");
+
+  let inflow = 0, outflow = 0;
+  const inflows = {};
+  const outflows = {};
+
+  data.forEach(tx => {
+    const category = tx.category.toLowerCase();
+    const amount = parseFloat(tx.amount);
+
+    if (["income", "sales", "deposit"].some(k => category.includes(k))) {
+      inflow += amount;
+      inflows[category] = (inflows[category] || 0) + amount;
+    } else {
+      outflow += amount;
+      outflows[category] = (outflows[category] || 0) + amount;
+    }
+  });
+
+  inflowList.innerHTML = Object.entries(inflows).map(([cat, amt]) =>
+    `<li>${cat}: ₦${amt.toLocaleString()}</li>`).join("");
+
+  outflowList.innerHTML = Object.entries(outflows).map(([cat, amt]) =>
+    `<li>${cat}: ₦${amt.toLocaleString()}</li>`).join("");
+
+  document.getElementById("cashInTotal").textContent = `₦${inflow.toLocaleString()}`;
+  document.getElementById("cashOutTotal").textContent = `₦${outflow.toLocaleString()}`;
+  document.getElementById("netCashFlow").textContent = `₦${(inflow - outflow).toLocaleString()}`;
+}
+
+// 🧾 BALANCE SHEET
+function renderBalanceSheet(data) {
+  const assets = {};
+  const liabilities = {};
+
+  data.forEach(tx => {
+    const category = tx.category.toLowerCase();
+    const amount = parseFloat(tx.amount);
+
+    if (["cash", "inventory", "equipment", "bank"].some(k => category.includes(k))) {
+      assets[category] = (assets[category] || 0) + amount;
+    }
+
+    if (["loan", "debt", "payable"].some(k => category.includes(k))) {
+      liabilities[category] = (liabilities[category] || 0) + amount;
+    }
+  });
+
+  const assetList = document.getElementById("assetsList");
+  const liabilityList = document.getElementById("liabilitiesList");
+
+  assetList.innerHTML = Object.entries(assets).map(([cat, amt]) =>
+    `<li>${cat}: ₦${amt.toLocaleString()}</li>`).join("");
+
+  liabilityList.innerHTML = Object.entries(liabilities).map(([cat, amt]) =>
+    `<li>${cat}: ₦${amt.toLocaleString()}</li>`).join("");
+
+  const totalAssets = Object.values(assets).reduce((a, b) => a + b, 0);
+  const totalLiabilities = Object.values(liabilities).reduce((a, b) => a + b, 0);
+  const equity = totalAssets - totalLiabilities;
+
+  document.getElementById("totalAssets").textContent = `₦${totalAssets.toLocaleString()}`;
+  document.getElementById("totalLiabilities").textContent = `₦${totalLiabilities.toLocaleString()}`;
+  document.getElementById("equityValue").textContent = `₦${equity.toLocaleString()}`;
+}
+
+// 🎯 INITIAL RENDER
+renderCharts(filteredData);
+renderPLReport(filteredData);
+renderBalanceSheet(filteredData);
+renderCashFlow(filteredData);
+
+
+document.getElementById("exportBalance").addEventListener("click", () => {
+  const node = document.querySelector(".balance-grid");
+
+  if (!node) {
+    alert("Balance grid not found.");
     return;
   }
 
-  const all = getAllTransactions();
-  const filtered = all.filter(tx => {
-    const txDate = new Date(tx.created);
-    return txDate >= startDate && txDate <= endDate;
+  html2canvas(node).then(canvas => {
+    const link = document.createElement("a");
+    link.href = canvas.toDataURL("image/png");
+    link.download = "Balance_Sheet.png";
+    link.click();
+  }).catch(err => {
+    console.error("Export failed:", err);
+    alert("Something went wrong while exporting.");
   });
-
-  drawReports(filtered);
 });
 
-// Event: Download Charts
-downloadLine.addEventListener("click", () => {
-  const link = document.createElement("a");
-  link.download = "income-vs-expenses.png";
-  link.href = lineChartInstance.toBase64Image();
-  link.click();
-});
+document.getElementById("exportBalance").addEventListener("click", () => {
+  const target = document.getElementById("balanceSheetSection");
 
-downloadBar.addEventListener("click", () => {
-  const link = document.createElement("a");
-  link.download = "expense-categories.png";
-  link.href = barChartInstance.toBase64Image();
-  link.click();
-});
+  if (!target) {
+    alert("Balance sheet section not found!");
+    return;
+  }
 
-// Initial Load
-drawReports();
+  html2canvas(target).then(canvas => {
+    const link = document.createElement("a");
+    link.href = canvas.toDataURL("image/png");
+    link.download = "Balance_Sheet.png";
+    link.click();
+  }).catch(err => {
+    console.error("Download failed:", err);
+    alert("Could not export Balance Sheet.");
+  });
+});
