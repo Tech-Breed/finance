@@ -43,3 +43,6 @@ btn.addEventListener("click", async () => {
   doc.text(`Notes: ${notes}`, 10, 70);
   doc.save(`Invoice_${client}_${Date.now()}.pdf`);
 });
+
+const { jsPDF } = window.jspdf;
+const doc = new jsPDF();

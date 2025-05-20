@@ -136,3 +136,6 @@ function generatePDF(inv) {
 // Init
 statusFilter.addEventListener("change", filterInvoices);
 filterInvoices();
+
+const { jsPDF } = window.jspdf;
+const doc = new jsPDF();
