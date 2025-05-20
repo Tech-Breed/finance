@@ -2,6 +2,7 @@ import { saveInvoice } from "./storage.js";
 console.log("createinvoice.js loaded");
 import { saveInvoice } from "./storage.js";
 console.log("Invoice script loaded!");
+import { saveInvoice } from "./storage.js"; // ✅ Only correct IF you're inside js/
 
 
 
